@@ -101,8 +101,8 @@ function dropHandler(ev) {
     if (ev.dataTransfer.items) {
         var item = ev.dataTransfer.items[0];
         var blob = item.getAsFile();
-
-        if (!SUPPORTED_MIMETYPES.includes(blob.type) && !blob.type.includes("text/")) {
+        console.log("File mimetype (guess):", blob.type);
+        if (!SUPPORTED_MIMETYPES.includes(blob.type) && !blob.type.includes("text/") && blob.type !== "") {
             alert("Unrecognized file type, currently only text files are supported");
             form.classList.remove('highlight');
             grid_form.classList.remove('hidden');
@@ -117,11 +117,17 @@ function dropHandler(ev) {
 
         postData(url, blob)
             .then(data => {
-                if (data === "FILE_UPLOAD_FAILED") {
-                    alert("An error occurred while uploading the paste.");
-                    return;
+                switch(data) {
+                    case "UNSUPPORTED_MIMETYPE":
+                        alert("Unrecognized file type, currently only text files are supported");
+                        break;
+                    case "FILE_UPLOAD_FAILED":
+                        alert("An error occurred while uploading the paste.");
+                        break;
+                    default:
+                        window.location.href = data + "." + ext;    
+                        break;
                 }
-                window.location.href = data + "." + ext;
             })
             .catch(function (err) {
                 console.info(err + " url: " + url);
@@ -152,11 +158,18 @@ document.onpaste = function (pasteEvent) {
 
         postData(url, blob)
             .then(data => {
-                if (data === "FILE_UPLOAD_FAILED") {
-                    alert("An error occurred while uploading the paste.");
-                    return;
+                switch(data) {
+                    case "UNSUPPORTED_MIMETYPE":
+                        alert("Unrecognized file type, currently only text files are supported");
+                        return;
+                    case "FILE_UPLOAD_FAILED":
+                        alert("An error occurred while uploading the paste.");
+                        return;
+                    default:
+                        window.location.href = data;
+                        break;
                 }
-                window.location.href = data;
+                
             })
             .catch(function (err) {
                 console.info(err + " url: " + url);

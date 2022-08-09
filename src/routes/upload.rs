@@ -11,6 +11,11 @@ const SUPPORTED_MIMETYPES: [&'static str; 4] = [
     "application/json", "application/xml", "application/mbox", "application/x-shellscript"
 ];
 
+// text/x-tex: Rust detect PDF file as this one.
+const BLACKLIST: [&'static str; 1] = [
+    "text/x-tex"
+];
+
 #[post("/", data = "<paste>")]
 pub async fn upload(mut paste: Data<'_>) -> Result<String, &str> {
     let args = get_parsed_args();
@@ -22,8 +27,8 @@ pub async fn upload(mut paste: Data<'_>) -> Result<String, &str> {
     
     let mime = tree_magic::from_u8(file);
     println!("{}", mime);
-    if !mime.contains("text") && !SUPPORTED_MIMETYPES.contains(&mime.as_str()) { 
-        return Err("FILE_UPLOAD_FAILED");
+    if BLACKLIST.contains(&mime.as_str()) || (!mime.contains("text") && !SUPPORTED_MIMETYPES.contains(&mime.as_str())) { 
+        return Err("UNSUPPORTED_MIMETYPE");
     }
 
     let result = paste
