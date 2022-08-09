@@ -149,7 +149,8 @@ document.onpaste = function (pasteEvent) {
     var blob = item.getAsFile();
 
     if (blob !== null && blob !== '') {
-        if (!SUPPORTED_MIMETYPES.includes(blob.type) && !blob.type.includes("text/")) {
+        console.log("File mimetype (guess):", blob.type);
+        if (!SUPPORTED_MIMETYPES.includes(blob.type) && !blob.type.includes("text/") && blob.type !== "") {
             alert("Unrecognized file type, currently only text files are supported");
             return;
         }
