@@ -7,7 +7,7 @@ const select = document.querySelector('select');
 const submitButton = document.querySelector('button[type="submit"]');
 
 // For mimetypes other than text/*
-const SUPPORTED_MIMETYPES = ["application/json", "application/xml"];
+const SUPPORTED_MIMETYPES = ["application/json", "application/xml", "application/mbox"];
 
 window.onload = () => {
     if (localStorage["forkText"] !== null) {
@@ -112,20 +112,26 @@ function dropHandler(ev) {
         upload_card.classList.add('show');
         grid_form.classList.add('hidden');
 
-        const ext = blob.name.split(".")[1];
+        const ext = blob.name.split(".").at(-1);
         var url = window.location.href;
 
         postData(url, blob)
             .then(data => {
+                if (data === "FILE_UPLOAD_FAILED") {
+                    alert("An error occurred while uploading the paste.");
+                    return;
+                }
                 window.location.href = data + "." + ext;
-
+            })
+            .catch(function (err) {
+                console.info(err + " url: " + url);
+                alert("An error occurred while uploading the paste.");
+            })
+            .finally(() => {
                 // remove the jazz for if user returns to the prev page
                 upload_card.classList.remove('show');
                 grid_form.classList.remove('hidden');
                 form.classList.remove('highlight');
-            })
-            .catch(function (err) {
-                console.info(err + " url: " + url);
             });
     }
 }
@@ -146,10 +152,15 @@ document.onpaste = function (pasteEvent) {
 
         postData(url, blob)
             .then(data => {
+                if (data === "FILE_UPLOAD_FAILED") {
+                    alert("An error occurred while uploading the paste.");
+                    return;
+                }
                 window.location.href = data;
             })
             .catch(function (err) {
                 console.info(err + " url: " + url);
+                alert("An error occurred while uploading the paste.");
             });
     }
 }

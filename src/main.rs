@@ -66,7 +66,7 @@ pub struct Args {
 
     /// Binary uploads file size limit (in MiB)
     #[clap(short, long, default_value_t = 100)]
-    binary_upload_limit: i32,
+    binary_upload_limit: u32,
 
     /// Include client description
     #[clap(short, long, env)]
