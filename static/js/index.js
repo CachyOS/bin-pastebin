@@ -6,6 +6,9 @@ const textarea = document.querySelector('textarea');
 const select = document.querySelector('select');
 const submitButton = document.querySelector('button[type="submit"]');
 
+// For mimetypes other than text/*
+const SUPPORTED_MIMETYPES = ["application/json", "application/xml"];
+
 window.onload = () => {
     if (localStorage["forkText"] !== null) {
         const textArea = document.getElementById('textarea_content');
@@ -95,13 +98,20 @@ function unhighlight(e) {
 function dropHandler(ev) {
     ev.preventDefault();
 
-    // Give a visual cue
-    upload_card.classList.add('show');
-    grid_form.classList.add('hidden');
-
     if (ev.dataTransfer.items) {
         var item = ev.dataTransfer.items[0];
         var blob = item.getAsFile();
+
+        if (!SUPPORTED_MIMETYPES.includes(blob.type) && !blob.type.includes("text/")) {
+            alert("Unrecognized file type, currently only text files are supported");
+            form.classList.remove('highlight');
+            grid_form.classList.remove('hidden');
+            return;
+        }
+        // Give a visual cue
+        upload_card.classList.add('show');
+        grid_form.classList.add('hidden');
+
         const ext = blob.name.split(".")[1];
         var url = window.location.href;
 
@@ -127,6 +137,11 @@ document.onpaste = function (pasteEvent) {
     var blob = item.getAsFile();
 
     if (blob !== null && blob !== '') {
+        if (!SUPPORTED_MIMETYPES.includes(blob.type) && !blob.type.includes("text/")) {
+            alert("Unrecognized file type, currently only text files are supported");
+            return;
+        }
+        
         var url = window.location.href;
 
         postData(url, blob)
