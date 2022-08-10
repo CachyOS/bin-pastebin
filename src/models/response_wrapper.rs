@@ -55,11 +55,6 @@ impl<'r, 'o: 'r, R: Responder<'r, 'o>> Responder<'r, 'o>
         match self {
             MetaInterfaceResponse(sup) => response
                 .join(sup.respond_to(request)?)
-                .raw_header("ETag", &*crate::BINARY_ETAG)
-                .raw_header(
-                    "Cache-Control",
-                    "max-age=604800, stale-while-revalidate=86400",
-                )
                 .ok(),
 
             PrettyPasteContentResponse(sup, modified) => response
