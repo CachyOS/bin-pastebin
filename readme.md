@@ -28,10 +28,10 @@ You can paste
 
 #### Installation
 
-Get the client from [this repository](contrib/cli/client) or from my deployed paste:
+Get the client from [this repository](contrib/cli/client):
 
 ```bash
-curl -o pst https://bin.wantguns.dev/client
+curl -o pst https://github.com/CachyOS/bin-pastebin/raw/master/contrib/cli/client
 chmod +x pst
 ```
 
