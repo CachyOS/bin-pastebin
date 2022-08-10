@@ -24,7 +24,7 @@ const SERVER_VERSION: &str = concat!(
     ") (Rocket)"
 );
 static BINARY_ETAG: Lazy<String> =
-    Lazy::new(|| sha256::digest(BINARY_VERSION));
+    Lazy::new(|| blake3::hash(BINARY_VERSION.as_bytes()).to_string());
 
 #[derive(RustEmbed)]
 #[folder = "templates/"]

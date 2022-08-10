@@ -13,13 +13,18 @@ pub struct PasteIdForm {
 
 #[post("/submit", data = "<paste>")]
 pub async fn submit(paste: Form<PasteIdForm>) -> Redirect {
-    let id = PasteId::new(6);
+    let content = &paste.content;
+    let id = PasteId::new(7, content.as_bytes());
 
     let filepath = Path::new(&get_upload_dir()).join(format!("{id}", id = id));
-    let content = &paste.content;
     let ext = &paste.ext;
+    let url = format!("/p/{id}.{ext}", id = id, ext = ext);
+
+    if filepath.is_file() {
+        return Redirect::to(url);
+    }
 
     fs::write(&filepath, content).expect("Unable to write to the file");
 
-    Redirect::to(format!("/p/{id}.{ext}", id = id, ext = ext))
+    Redirect::to(url)
 }

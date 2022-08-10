@@ -19,16 +19,20 @@ const BLACKLIST: [&'static str; 1] = [
 #[post("/", data = "<paste>")]
 pub async fn upload(mut paste: Data<'_>) -> Result<String, &str> {
     let args = get_parsed_args();
-    let id = PasteId::new(6);
-
-    let filepath = Path::new(&args.upload).join(format!("{id}", id = id));
-
     let file = paste.peek(args.binary_upload_limit.mebibytes().as_u64() as usize).await;
-    
     let mime = tree_magic::from_u8(file);
     println!("{}", mime);
+
     if BLACKLIST.contains(&mime.as_str()) || (!mime.contains("text") && !SUPPORTED_MIMETYPES.contains(&mime.as_str())) { 
         return Err("UNSUPPORTED_MIMETYPE");
+    }
+
+    let id = PasteId::new(7, file);
+    let filepath = Path::new(&args.upload).join(format!("{id}", id = id));
+    let url = format!("/p/{id}", id = id);
+
+    if filepath.is_file() {
+        return Ok(url);
     }
 
     let result = paste
@@ -39,7 +43,5 @@ pub async fn upload(mut paste: Data<'_>) -> Result<String, &str> {
     if result.is_err() {
         return Err("FILE_UPLOAD_FAILED");
     }
-
-    let url = format!("/p/{id}", id = id);
     Ok(url)
 }
