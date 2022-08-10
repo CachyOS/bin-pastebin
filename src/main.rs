@@ -17,7 +17,7 @@ mod routes;
 const BINARY_VERSION: &str =
     concat!(env!("CARGO_PKG_VERSION"), env!("GIT_HASH"));
 const SERVER_VERSION: &str = concat!(
-    "bin v.",
+    "CachyOS/bin-pastebin v.",
     env!("CARGO_PKG_VERSION"),
     " (",
     env!("GIT_HASH"),
@@ -108,7 +108,8 @@ fn rocket() -> _ {
                 routes::retrieve::retrieve,
                 routes::retrieve::retrieve_ext,
                 routes::pretty_retrieve::pretty_retrieve,
-                routes::pretty_retrieve::pretty_retrieve_ext
+                routes::pretty_retrieve::pretty_retrieve_ext,
+                routes::version::version
             ],
         )
         .attach(shield)
