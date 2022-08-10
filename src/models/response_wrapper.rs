@@ -55,6 +55,7 @@ impl<'r, 'o: 'r, R: Responder<'r, 'o>> Responder<'r, 'o>
         match self {
             MetaInterfaceResponse(sup) => response
                 .join(sup.respond_to(request)?)
+                .raw_header("ETag", &*crate::BINARY_ETAG)
                 .ok(),
 
             PrettyPasteContentResponse(sup, modified) => response

@@ -3,15 +3,15 @@ const form = document.querySelector('form');
 const grid_form = document.querySelector('.grid_form');
 const upload_card = document.querySelector('#upload_card');
 const textarea = document.querySelector('textarea');
+const textArea = document.getElementById('textarea_content');
 const select = document.querySelector('select');
 const submitButton = document.querySelector('button[type="submit"]');
 
 // For mimetypes other than text/*
-const SUPPORTED_MIMETYPES = ["application/json", "application/xml", "application/mbox"];
+const SUPPORTED_MIMETYPES = ["application/json", "application/xml", "application/mbox", "application/toml"];
 
 window.onload = () => {
     if (localStorage["forkText"] !== null) {
-        const textArea = document.getElementById('textarea_content');
         textArea.textContent = localStorage["forkText"];
         localStorage.clear();
         onInput();
@@ -152,6 +152,7 @@ document.onpaste = function (pasteEvent) {
         console.log("File mimetype (guess):", blob.type);
         if (!SUPPORTED_MIMETYPES.includes(blob.type) && !blob.type.includes("text/") && blob.type !== "") {
             alert("Unrecognized file type, currently only text files are supported");
+            textArea.value = "";
             return;
         }
         
@@ -159,6 +160,7 @@ document.onpaste = function (pasteEvent) {
 
         postData(url, blob)
             .then(data => {
+                textArea.value = "";
                 switch(data) {
                     case "UNSUPPORTED_MIMETYPE":
                         alert("Unrecognized file type, currently only text files are supported");
