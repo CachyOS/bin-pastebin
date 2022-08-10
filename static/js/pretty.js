@@ -19,6 +19,10 @@ function wrapClicked() {
     }
 }
 
+function rawClicked() {
+    window.location.href = window.location.href.replace("p/","");
+}
+
 function forkClicked() {
     let text = pasteContentDiv.innerText;
     localStorage["forkText"] = text;
