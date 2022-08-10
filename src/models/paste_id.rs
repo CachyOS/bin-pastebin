@@ -3,8 +3,6 @@ use std::fmt;
 
 use rocket::request::FromParam;
 
-use rand::{self, distributions::Alphanumeric, Rng};
-
 pub struct PasteId<'a>(Cow<'a, str>);
 
 fn valid_id(id: &str) -> bool {
