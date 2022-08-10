@@ -29,7 +29,7 @@ CLI USAGE
        Client available at /client
 {% endif %}
 SEE ALSO
-       github.com/wantguns/bin
+       github.com/CachyOS/bin-pastebin
 " autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         </div>
         <div class="selectBox">
