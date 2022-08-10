@@ -3,8 +3,6 @@ use std::fmt;
 
 use rocket::request::FromParam;
 
-use rand::{self, distributions::Alphanumeric, Rng};
-
 pub struct PasteId<'a>(Cow<'a, str>);
 
 fn valid_id(id: &str) -> bool {
@@ -12,12 +10,9 @@ fn valid_id(id: &str) -> bool {
 }
 
 impl<'a> PasteId<'a> {
-    pub fn new(size: usize) -> PasteId<'static> {
-        let id: String = rand::thread_rng()
-            .sample_iter(&Alphanumeric)
-            .take(size)
-            .map(char::from)
-            .collect();
+    pub fn new(size: usize, input: &[u8]) -> PasteId<'static> {
+        let mut id: String = blake3::hash(input).to_string();
+        id.truncate(size);
 
         PasteId(Cow::Owned(id))
     }
