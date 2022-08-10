@@ -1,6 +1,6 @@
 use rocket::data::{Data, ToByteUnit};
 
-use std::path::Path;
+use std::{fs, path::Path};
 
 use crate::get_parsed_args;
 use crate::models::paste_id::PasteId;
@@ -20,10 +20,10 @@ const BLACKLIST: [&str; 1] = ["text/x-tex"];
 #[post("/", data = "<paste>")]
 pub async fn upload(mut paste: Data<'_>) -> Result<String, &str> {
     let args = get_parsed_args();
-    let file = paste
+    let file_partial = paste
         .peek(args.binary_upload_limit.mebibytes().as_u64() as usize)
         .await;
-    let mime = tree_magic::from_u8(file);
+    let mime = tree_magic::from_u8(file_partial);
     println!("{}", mime);
 
     if BLACKLIST.contains(&mime.as_str())
@@ -33,20 +33,22 @@ pub async fn upload(mut paste: Data<'_>) -> Result<String, &str> {
         return Err("UNSUPPORTED_MIMETYPE");
     }
 
-    let id = PasteId::new(7, file);
+    let result = paste
+        .open(args.binary_upload_limit.mebibytes())
+        .into_bytes()
+        .await;
+    if result.is_err() {
+        return Err("FILE_UPLOAD_FAILED");
+    }
+
+    let file = result.unwrap().value;
+    let id = PasteId::new(7, &file);
     let filepath = Path::new(&args.upload).join(format!("{id}", id = id));
     let url = format!("/p/{id}", id = id);
-
     if filepath.is_file() {
         return Ok(url);
     }
-
-    let result = paste
-        .open(args.binary_upload_limit.mebibytes())
-        .into_file(&filepath)
-        .await;
-
-    if result.is_err() {
+    if fs::write(&filepath, file).is_err() {
         return Err("FILE_UPLOAD_FAILED");
     }
     Ok(url)
