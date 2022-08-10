@@ -6,9 +6,11 @@ It does not require you to host a SQL server and everything is self-contained in
 a statically linked binary (the docker image runs on scratch !), which makes it
 extremely easy to deploy.
 
-Try it out on: https://basedbin.fly.dev
+Try it out on: https://paste.cachyos.org
 
 ## Clients
+
+> Unlike the original project which basically allow you to upload anything, this is a true pastebin that only allows uploading text files (files with mimetype `text` and some other text files like json, etc.), see [upload.rs](src/routes/upload.rs) for more information.
 
 ### Web
 
@@ -16,11 +18,9 @@ You can paste
 
 - Normal Text
 
-- Paste Images from clipboard:  
-![clipboard-paste](.github/files/image_clipboard.gif)
+- Paste text files from clipboard
 
-- Files by drag and drop:  
-![drag_n_drop](.github/files/drag_n_drop.gif)
+- Text files by drag and drop
 
 ### CLI
 
@@ -41,7 +41,7 @@ or manually copy the following at a file in your path.
 #!/bin/bash
 
 # Change the url accordingly
-URL="https://basedbin.fly.dev"
+URL="https://paste.cachyos.org"
 
 FILEPATH="$1"
 FILENAME=$(basename -- "$FILEPATH")
@@ -90,8 +90,7 @@ Currently, builds for the following target triples are shipped:
 - x86_64-unknown-linux-gnu (amd64)
 - aarch64-unknown-linux-gnu (arm64)
 
-The builds shipped are statically linked, so you don't even need a libc to run
-the binary !  
+The builds shipped are statically linked, so you don't even need a libc to run the binary!  
 The docker manifest labelled
 [`wantguns/bin:latest`](https://hub.docker.com/layers/wantguns/bin/latest/images/sha256-34c19b59d098bd1420fc48f6b1f01dc250d3d8787a3786f5425efb4e74cc17f2?context=repo)
 includes the images for both amd64 and arm64 images.
@@ -194,11 +193,11 @@ BIN_IDENT=false
 `GET /p/<id>.<ext> `  
 
   Get syntax highlighted pastes.  
-  E.g. https://basedbin.fly.dev/p/foobaz.cpp should return a C++ syntax
+  E.g. https://paste.cachyos.org/p/foobaz.cpp should return a C++ syntax
   highlighted paste
 
 `POST /`  
-  Post binary data
+  Post text data, only text files are allowed, otherwise it'll immediately return `UNSUPPORTED_MIMETYPE` response
 
 ## Design Decisions
 
