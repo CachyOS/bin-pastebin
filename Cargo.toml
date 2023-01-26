@@ -17,6 +17,7 @@ once_cell = "1"
 blake3 = "1.3.1"
 time = { version = "0.3", features = ["formatting"] }
 serde = { features = ["derive"] }
+mime_guess = "2.0.4"
 
 [dependencies.rocket_dyn_templates]
 version = "0.1.0-rc.1"

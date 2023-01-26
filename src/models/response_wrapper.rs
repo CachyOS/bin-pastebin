@@ -9,7 +9,7 @@ use std::time::SystemTime;
 pub enum ResponseWrapper<R> {
     MetaInterfaceResponse(R),
     PrettyPasteContentResponse(R, SystemTime),
-    RawPasteContentResponse(R, SystemTime),
+    RawPasteContentResponse(R, SystemTime, String),
     Redirect(Box<Redirect>),
     NotFound(String),
     ServerError(String),
@@ -24,8 +24,8 @@ impl<'r, 'o: 'r, R: Responder<'r, 'o>> ResponseWrapper<R> {
         Self::PrettyPasteContentResponse(responder, modified)
     }
 
-    pub fn raw_paste_response(responder: R, modified: SystemTime) -> Self {
-        Self::RawPasteContentResponse(responder, modified)
+    pub fn raw_paste_response(responder: R, modified: SystemTime, mimetype: &str) -> Self {
+        Self::RawPasteContentResponse(responder, modified, mimetype.to_string())
     }
 
     pub fn redirect(redirect: Redirect) -> Self {
@@ -67,10 +67,11 @@ impl<'r, 'o: 'r, R: Responder<'r, 'o>> Responder<'r, 'o>
                 )
                 .ok(),
 
-            RawPasteContentResponse(sup, modified) => response
+            RawPasteContentResponse(sup, modified, mimetype) => response
                 .join(sup.respond_to(request)?)
                 .raw_header("Last-Modified", http_strftime(modified))
                 .raw_header("Cache-Control", "max-age=604800, immutable")
+                .raw_header("Content-Type", mimetype)
                 .ok(),
 
             Redirect(sup) => response.join(sup.respond_to(request)?).ok(),
