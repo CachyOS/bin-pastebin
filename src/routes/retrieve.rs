@@ -1,7 +1,7 @@
+use mime_guess::from_ext;
 use std::fs::File;
 use std::io::ErrorKind::NotFound;
 use std::path::Path;
-use mime_guess::from_ext;
 
 use crate::get_upload_dir;
 use crate::models::paste_id::PasteId;
@@ -23,7 +23,7 @@ pub async fn retrieve_inner(id: &str, ext: &str) -> ResponseWrapper<File> {
     let filepath = Path::new(&get_upload_dir()).join(id);
     let mimetype = match from_ext(ext).first_raw() {
         None => "text/plain",
-        Some(v) => v
+        Some(v) => v,
     };
     let modified_date =
         match std::fs::metadata(&filepath).and_then(|m| m.modified()) {

@@ -24,8 +24,16 @@ impl<'r, 'o: 'r, R: Responder<'r, 'o>> ResponseWrapper<R> {
         Self::PrettyPasteContentResponse(responder, modified)
     }
 
-    pub fn raw_paste_response(responder: R, modified: SystemTime, mimetype: &str) -> Self {
-        Self::RawPasteContentResponse(responder, modified, mimetype.to_string())
+    pub fn raw_paste_response(
+        responder: R,
+        modified: SystemTime,
+        mimetype: &str,
+    ) -> Self {
+        Self::RawPasteContentResponse(
+            responder,
+            modified,
+            mimetype.to_string(),
+        )
     }
 
     pub fn redirect(redirect: Redirect) -> Self {
