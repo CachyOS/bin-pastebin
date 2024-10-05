@@ -2,7 +2,6 @@ use std::fs;
 use std::path::Path;
 use std::io::Cursor;
 
-use anyhow::Result;
 use syntect::highlighting::ThemeSet;
 use syntect::html::highlighted_html_for_string;
 use syntect::parsing::SyntaxSet;
@@ -23,5 +22,5 @@ pub fn get_pretty_body(path: &Path, ext: &str) -> std::io::Result<String> {
         .find_syntax_by_token(ext)
         .unwrap_or_else(|| ss.find_syntax_plain_text());
 
-    Ok(highlighted_html_for_string(&content, &ss, syntax, &theme).expect("Failed to get highlighted html"))
+    Ok(highlighted_html_for_string(&content, &ss, syntax, &theme))
 }
