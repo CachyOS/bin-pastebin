@@ -1,25 +1,25 @@
 [package]
 name = "bin"
-version = "2.2.1"
+version = "2.2.2"
 authors = ["Gunwant Jain <mail@wantguns.dev>", "tretrauit <tretrauit@cachyos.org>"]
 edition = "2021"
 build = "build.rs"
 repository = "https://github.com/CachyOS/bin-pastebin/"
 
 [dependencies]
-rand = "0.8.4"
-rocket = { version = "0.5.0-rc.2", features = ["json"] }
-tree_magic = "0.2.3"
-syntect = "4.6.0"
-rust-embed="6.3.0"
-clap = { version = "3.0.9", features = ["derive", "env"] }
+rand = "0.8"
+rocket = { version = "0.5", features = ["json"] }
+tree_magic = "0.2"
+syntect = "5"
+rust-embed = "8"
+clap = { version = "4", features = ["derive", "env"] }
 once_cell = "1"
-blake3 = "1.3.1"
+blake3 = "1.3"
 time = { version = "0.3", features = ["formatting"] }
-serde = { features = ["derive"] }
-mime_guess = "2.0.4"
+serde = { version = "1", features = ["derive"] }
+mime_guess = "2"
 
 [dependencies.rocket_dyn_templates]
-version = "0.1.0-rc.1"
+version = "0.2"
 features = ["tera"]
 
