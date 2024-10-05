@@ -10,7 +10,7 @@ repository = "https://github.com/CachyOS/bin-pastebin/"
 rand = "0.8"
 rocket = { version = "0.5", features = ["json"] }
 tree_magic = "0.2"
-syntect = "5"
+syntect = "4.6.0"
 rust-embed = "8"
 clap = { version = "4", features = ["derive", "env"] }
 once_cell = "1"
